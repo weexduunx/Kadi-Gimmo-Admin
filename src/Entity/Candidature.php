@@ -27,10 +27,6 @@ class Candidature
      */
     private $client_id;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $date_candidature;
 
     /**
      * @ORM\ManyToOne(targetEntity=Bien::class, inversedBy="candidatures")
@@ -43,6 +39,26 @@ class Candidature
      * @ORM\JoinColumn(nullable=false)
      */
     private $client;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $debut_candidature;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $duree_du_contrat;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=3)
+     */
+    private $mensualite;
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $nature_du_logement = [];
 
     public function getId(): ?int
     {
@@ -73,18 +89,6 @@ class Candidature
         return $this;
     }
 
-    public function getDateCandidature(): ?\DateTimeInterface
-    {
-        return $this->date_candidature;
-    }
-
-    public function setDateCandidature(\DateTimeInterface $date_candidature): self
-    {
-        $this->date_candidature = $date_candidature;
-
-        return $this;
-    }
-
     public function getBien(): ?Bien
     {
         return $this->bien;
@@ -105,6 +109,54 @@ class Candidature
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getDebutCandidature(): ?\DateTimeInterface
+    {
+        return $this->debut_candidature;
+    }
+
+    public function setDebutCandidature(\DateTimeInterface $debut_candidature): self
+    {
+        $this->debut_candidature = $debut_candidature;
+
+        return $this;
+    }
+
+    public function getDureeDuContrat(): ?string
+    {
+        return $this->duree_du_contrat;
+    }
+
+    public function setDureeDuContrat(string $duree_du_contrat): self
+    {
+        $this->duree_du_contrat = $duree_du_contrat;
+
+        return $this;
+    }
+
+    public function getMensualite(): ?string
+    {
+        return $this->mensualite;
+    }
+
+    public function setMensualite(string $mensualite): self
+    {
+        $this->mensualite = $mensualite;
+
+        return $this;
+    }
+
+    public function getNatureDuLogement(): ?array
+    {
+        return $this->nature_du_logement;
+    }
+
+    public function setNatureDuLogement(array $nature_du_logement): self
+    {
+        $this->nature_du_logement = $nature_du_logement;
 
         return $this;
     }

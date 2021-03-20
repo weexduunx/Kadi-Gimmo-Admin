@@ -25,24 +25,9 @@ class Site
     private $code_site;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $crée_le;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $supprimé_le;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $MàJ_le;
 
     /**
      * @ORM\Column(type="integer")
@@ -59,6 +44,27 @@ class Site
      * @ORM\JoinColumn(nullable=false)
      */
     private $ville;
+
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nature_du_site;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $created_at;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $updated_at;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $deleted_at;
 
     public function __construct()
     {
@@ -82,30 +88,6 @@ class Site
         return $this;
     }
 
-    public function getCréeLe(): ?\DateTimeInterface
-    {
-        return $this->crée_le;
-    }
-
-    public function setCréeLe(\DateTimeInterface $crée_le): self
-    {
-        $this->crée_le = $crée_le;
-
-        return $this;
-    }
-
-    public function getSuppriméLe(): ?\DateTimeInterface
-    {
-        return $this->supprimé_le;
-    }
-
-    public function setSuppriméLe(\DateTimeInterface $supprimé_le): self
-    {
-        $this->supprimé_le = $supprimé_le;
-
-        return $this;
-    }
-
     public function getNom(): ?string
     {
         return $this->nom;
@@ -118,17 +100,6 @@ class Site
         return $this;
     }
 
-    public function getMàJLe(): ?\DateTimeInterface
-    {
-        return $this->MàJ_le;
-    }
-
-    public function setMàJLe(\DateTimeInterface $MàJ_le): self
-    {
-        $this->MàJ_le = $MàJ_le;
-
-        return $this;
-    }
 
     public function getVilleId(): ?int
     {
@@ -183,4 +154,53 @@ class Site
 
         return $this;
     }
+
+    public function getNatureDuSite(): ?string
+    {
+        return $this->nature_du_site;
+    }
+
+    public function setNatureDuSite(string $nature_du_site): self
+    {
+        $this->nature_du_site = $nature_du_site;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deleted_at;
+    }
+
+    public function setDeletedAt(\DateTimeInterface $deleted_at): self
+    {
+        $this->deleted_at = $deleted_at;
+
+        return $this;
+    }
+
 }

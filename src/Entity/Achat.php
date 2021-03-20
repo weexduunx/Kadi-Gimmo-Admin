@@ -44,6 +44,21 @@ class Achat
      */
     private $client;
 
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=3)
+     */
+    private $mensualite;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $duree_du_contrat;
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $titre = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +120,42 @@ class Achat
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getMensualite(): ?string
+    {
+        return $this->mensualite;
+    }
+
+    public function setMensualite(string $mensualite): self
+    {
+        $this->mensualite = $mensualite;
+
+        return $this;
+    }
+
+    public function getDureeDuContrat(): ?\DateTimeInterface
+    {
+        return $this->duree_du_contrat;
+    }
+
+    public function setDureeDuContrat(\DateTimeInterface $duree_du_contrat): self
+    {
+        $this->duree_du_contrat = $duree_du_contrat;
+
+        return $this;
+    }
+
+    public function getTitre(): ?array
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(array $titre): self
+    {
+        $this->titre = $titre;
 
         return $this;
     }

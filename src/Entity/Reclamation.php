@@ -42,10 +42,6 @@ class Reclamation
      */
     private $mode;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $MàJ_Reclamation;
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="reclamations")
@@ -63,6 +59,11 @@ class Reclamation
      * @ORM\ManyToOne(targetEntity=Canal::class, inversedBy="reclamations")
      */
     private $canal;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $update_reclamation;
 
     public function getId(): ?int
     {
@@ -129,17 +130,6 @@ class Reclamation
         return $this;
     }
 
-    public function getMàJReclamation(): ?bool
-    {
-        return $this->MàJ_Reclamation;
-    }
-
-    public function setMàJReclamation(bool $MàJ_Reclamation): self
-    {
-        $this->MàJ_Reclamation = $MàJ_Reclamation;
-
-        return $this;
-    }
 
     public function getClient(): ?Client
     {
@@ -173,6 +163,18 @@ class Reclamation
     public function setCanal(?Canal $canal): self
     {
         $this->canal = $canal;
+
+        return $this;
+    }
+
+    public function getUpdateReclamation(): ?\DateTimeInterface
+    {
+        return $this->update_reclamation;
+    }
+
+    public function setUpdateReclamation(\DateTimeInterface $update_reclamation): self
+    {
+        $this->update_reclamation = $update_reclamation;
 
         return $this;
     }

@@ -80,6 +80,16 @@ class Client
      */
     private $reclamations;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $CIN;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $penality;
+
     public function __construct()
     {
         $this->achats = new ArrayCollection();
@@ -286,6 +296,30 @@ class Client
                 $reclamation->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCIN(): ?string
+    {
+        return $this->CIN;
+    }
+
+    public function setCIN(string $CIN): self
+    {
+        $this->CIN = $CIN;
+
+        return $this;
+    }
+
+    public function getPenality(): ?string
+    {
+        return $this->penality;
+    }
+
+    public function setPenality(string $penality): self
+    {
+        $this->penality = $penality;
 
         return $this;
     }
