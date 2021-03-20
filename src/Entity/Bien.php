@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BienRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -56,6 +58,34 @@ class Bien
      * @ORM\Column(type="datetime")
      */
     private $MàJ_le;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Projet::class, inversedBy="biens")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $projet;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Achat::class, mappedBy="bien")
+     */
+    private $achats;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Candidature::class, mappedBy="bien")
+     */
+    private $candidatures;
+
+    /**
+     * @ORM\OneToMany(targetEntity=TypeBien::class, mappedBy="bien")
+     */
+    private $typeBiens;
+
+    public function __construct()
+    {
+        $this->achats = new ArrayCollection();
+        $this->candidatures = new ArrayCollection();
+        $this->typeBiens = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -154,6 +184,108 @@ class Bien
     public function setMàJLe(\DateTimeInterface $MàJ_le): self
     {
         $this->MàJ_le = $MàJ_le;
+
+        return $this;
+    }
+
+    public function getProjet(): ?Projet
+    {
+        return $this->projet;
+    }
+
+    public function setProjet(?Projet $projet): self
+    {
+        $this->projet = $projet;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Achat[]
+     */
+    public function getAchats(): Collection
+    {
+        return $this->achats;
+    }
+
+    public function addAchat(Achat $achat): self
+    {
+        if (!$this->achats->contains($achat)) {
+            $this->achats[] = $achat;
+            $achat->setBien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAchat(Achat $achat): self
+    {
+        if ($this->achats->removeElement($achat)) {
+            // set the owning side to null (unless already changed)
+            if ($achat->getBien() === $this) {
+                $achat->setBien(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Candidature[]
+     */
+    public function getCandidatures(): Collection
+    {
+        return $this->candidatures;
+    }
+
+    public function addCandidature(Candidature $candidature): self
+    {
+        if (!$this->candidatures->contains($candidature)) {
+            $this->candidatures[] = $candidature;
+            $candidature->setBien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCandidature(Candidature $candidature): self
+    {
+        if ($this->candidatures->removeElement($candidature)) {
+            // set the owning side to null (unless already changed)
+            if ($candidature->getBien() === $this) {
+                $candidature->setBien(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TypeBien[]
+     */
+    public function getTypeBiens(): Collection
+    {
+        return $this->typeBiens;
+    }
+
+    public function addTypeBien(TypeBien $typeBien): self
+    {
+        if (!$this->typeBiens->contains($typeBien)) {
+            $this->typeBiens[] = $typeBien;
+            $typeBien->setBien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTypeBien(TypeBien $typeBien): self
+    {
+        if ($this->typeBiens->removeElement($typeBien)) {
+            // set the owning side to null (unless already changed)
+            if ($typeBien->getBien() === $this) {
+                $typeBien->setBien(null);
+            }
+        }
 
         return $this;
     }

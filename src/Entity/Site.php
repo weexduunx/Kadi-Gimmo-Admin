@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ProjetRepository;
+use App\Repository\SiteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ProjetRepository::class)
+ * @ORM\Entity(repositoryClass=SiteRepository::class)
  */
-class Projet
+class Site
 {
     /**
      * @ORM\Id
@@ -22,7 +22,7 @@ class Projet
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $code_projet;
+    private $code_site;
 
     /**
      * @ORM\Column(type="datetime")
@@ -40,29 +40,29 @@ class Projet
     private $nom;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $site_id;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $MàJ_le;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="projets")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="integer")
      */
-    private $site;
+    private $ville_id;
 
     /**
-     * @ORM\OneToMany(targetEntity=Bien::class, mappedBy="projet")
+     * @ORM\OneToMany(targetEntity=Projet::class, mappedBy="site")
      */
-    private $biens;
+    private $projets;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="site")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $ville;
 
     public function __construct()
     {
-        $this->biens = new ArrayCollection();
+        $this->projets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,14 +70,14 @@ class Projet
         return $this->id;
     }
 
-    public function getCodeProjet(): ?string
+    public function getCodeSite(): ?string
     {
-        return $this->code_projet;
+        return $this->code_site;
     }
 
-    public function setCodeProjet(string $code_projet): self
+    public function setCodeSite(string $code_site): self
     {
-        $this->code_projet = $code_projet;
+        $this->code_site = $code_site;
 
         return $this;
     }
@@ -118,18 +118,6 @@ class Projet
         return $this;
     }
 
-    public function getSiteId(): ?int
-    {
-        return $this->site_id;
-    }
-
-    public function setSiteId(int $site_id): self
-    {
-        $this->site_id = $site_id;
-
-        return $this;
-    }
-
     public function getMàJLe(): ?\DateTimeInterface
     {
         return $this->MàJ_le;
@@ -142,44 +130,56 @@ class Projet
         return $this;
     }
 
-    public function getSite(): ?Site
+    public function getVilleId(): ?int
     {
-        return $this->site;
+        return $this->ville_id;
     }
 
-    public function setSite(?Site $site): self
+    public function setVilleId(int $ville_id): self
     {
-        $this->site = $site;
+        $this->ville_id = $ville_id;
 
         return $this;
     }
 
     /**
-     * @return Collection|Bien[]
+     * @return Collection|Projet[]
      */
-    public function getBiens(): Collection
+    public function getProjets(): Collection
     {
-        return $this->biens;
+        return $this->projets;
     }
 
-    public function addBien(Bien $bien): self
+    public function addProjet(Projet $projet): self
     {
-        if (!$this->biens->contains($bien)) {
-            $this->biens[] = $bien;
-            $bien->setProjet($this);
+        if (!$this->projets->contains($projet)) {
+            $this->projets[] = $projet;
+            $projet->setSite($this);
         }
 
         return $this;
     }
 
-    public function removeBien(Bien $bien): self
+    public function removeProjet(Projet $projet): self
     {
-        if ($this->biens->removeElement($bien)) {
+        if ($this->projets->removeElement($projet)) {
             // set the owning side to null (unless already changed)
-            if ($bien->getProjet() === $this) {
-                $bien->setProjet(null);
+            if ($projet->getSite() === $this) {
+                $projet->setSite(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVille(): ?Ville
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?Ville $ville): self
+    {
+        $this->ville = $ville;
 
         return $this;
     }
