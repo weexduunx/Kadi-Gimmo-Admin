@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource(formats={"json"})
  * @ORM\Entity(repositoryClass=AchatRepository::class)
- * @ApiFilter(SearchFilter::class, properties={"titre":"ipartial"})
+ * @ApiFilter(SearchFilter::class, properties={"titre":"ipartial","id":"exact"})
  */
 class Achat
 {
