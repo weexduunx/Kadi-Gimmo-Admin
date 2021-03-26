@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CandidatureRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,145 +20,171 @@ class Candidature
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=3)
      */
-    private $bien_id;
+    private $cout_global;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
-    private $client_id;
-
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Bien::class, inversedBy="candidatures")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $bien;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="candidatures")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $client;
-
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $debut_candidature;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $duree_du_contrat;
+    private $status;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=3)
      */
-    private $mensualite;
+    private $monthly;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\OneToMany(targetEntity=Bien::class, mappedBy="candidature")
      */
-    private $nature_du_logement = [];
+    private $biens;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $type_de_candidature;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Client::class, mappedBy="candidature")
+     */
+    private $clients;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nom_du_bien;
+
+    public function __construct()
+    {
+        $this->biens = new ArrayCollection();
+        $this->clients = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getBienId(): ?int
+    public function getCoutGlobal(): ?string
     {
-        return $this->bien_id;
+        return $this->cout_global;
     }
 
-    public function setBienId(int $bien_id): self
+    public function setCoutGlobal(string $cout_global): self
     {
-        $this->bien_id = $bien_id;
+        $this->cout_global = $cout_global;
 
         return $this;
     }
 
-    public function getClientId(): ?int
+    public function getStatus(): ?bool
     {
-        return $this->client_id;
+        return $this->status;
     }
 
-    public function setClientId(int $client_id): self
+    public function setStatus(bool $status): self
     {
-        $this->client_id = $client_id;
+        $this->status = $status;
 
         return $this;
     }
 
-    public function getBien(): ?Bien
+    public function getMonthly(): ?string
     {
-        return $this->bien;
+        return $this->monthly;
     }
 
-    public function setBien(?Bien $bien): self
+    public function setMonthly(string $monthly): self
     {
-        $this->bien = $bien;
+        $this->monthly = $monthly;
 
         return $this;
     }
 
-    public function getClient(): ?Client
+    /**
+     * @return Collection|Bien[]
+     */
+    public function getBiens(): Collection
     {
-        return $this->client;
+        return $this->biens;
     }
 
-    public function setClient(?Client $client): self
+    public function addBien(Bien $bien): self
     {
-        $this->client = $client;
+        if (!$this->biens->contains($bien)) {
+            $this->biens[] = $bien;
+            $bien->setCandidature($this);
+        }
 
         return $this;
     }
 
-    public function getDebutCandidature(): ?\DateTimeInterface
+    public function removeBien(Bien $bien): self
     {
-        return $this->debut_candidature;
+        if ($this->biens->removeElement($bien)) {
+            // set the owning side to null (unless already changed)
+            if ($bien->getCandidature() === $this) {
+                $bien->setCandidature(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return $this->type_de_candidature;
     }
 
-    public function setDebutCandidature(\DateTimeInterface $debut_candidature): self
+    public function getTypeDeCandidature(): ?string
     {
-        $this->debut_candidature = $debut_candidature;
+        return $this->type_de_candidature;
+    }
+
+    public function setTypeDeCandidature(string $type_de_candidature): self
+    {
+        $this->type_de_candidature = $type_de_candidature;
 
         return $this;
     }
 
-    public function getDureeDuContrat(): ?string
+    /**
+     * @return Collection|Client[]
+     */
+    public function getClients(): Collection
     {
-        return $this->duree_du_contrat;
+        return $this->clients;
     }
 
-    public function setDureeDuContrat(string $duree_du_contrat): self
+    public function addClient(Client $client): self
     {
-        $this->duree_du_contrat = $duree_du_contrat;
+        if (!$this->clients->contains($client)) {
+            $this->clients[] = $client;
+            $client->setCandidature($this);
+        }
 
         return $this;
     }
 
-    public function getMensualite(): ?string
+    public function removeClient(Client $client): self
     {
-        return $this->mensualite;
-    }
-
-    public function setMensualite(string $mensualite): self
-    {
-        $this->mensualite = $mensualite;
+        if ($this->clients->removeElement($client)) {
+            // set the owning side to null (unless already changed)
+            if ($client->getCandidature() === $this) {
+                $client->setCandidature(null);
+            }
+        }
 
         return $this;
     }
 
-    public function getNatureDuLogement(): ?array
+    public function getNomDuBien(): ?string
     {
-        return $this->nature_du_logement;
+        return $this->nom_du_bien;
     }
 
-    public function setNatureDuLogement(array $nature_du_logement): self
+    public function setNomDuBien(string $nom_du_bien): self
     {
-        $this->nature_du_logement = $nature_du_logement;
+        $this->nom_du_bien = $nom_du_bien;
 
         return $this;
     }

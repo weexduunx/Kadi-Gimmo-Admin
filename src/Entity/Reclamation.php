@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReclamationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,9 +20,9 @@ class Reclamation
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
-    private $canal_id;
+    private $ref_rec;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -28,56 +30,45 @@ class Reclamation
     private $commentaire;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
-    private $etat_id;
+    private $status;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=Etat::class, mappedBy="reclamation")
      */
-    private $fichier;
+    private $etats;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity=Canal::class, mappedBy="reclamation")
      */
-    private $mode;
-
+    private $canals;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="reclamations")
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="reclamation")
      * @ORM\JoinColumn(nullable=false)
      */
     private $client;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="reclamations")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $etat;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Canal::class, inversedBy="reclamations")
-     */
-    private $canal;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $update_reclamation;
+    public function __construct()
+    {
+        $this->etats = new ArrayCollection();
+        $this->canals = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCanalId(): ?int
+    public function getRefRec(): ?string
     {
-        return $this->canal_id;
+        return $this->ref_rec;
     }
 
-    public function setCanalId(int $canal_id): self
+    public function setRefRec(string $ref_rec): self
     {
-        $this->canal_id = $canal_id;
+        $this->ref_rec = $ref_rec;
 
         return $this;
     }
@@ -94,42 +85,77 @@ class Reclamation
         return $this;
     }
 
-    public function getEtatId(): ?int
+    public function getStatus(): ?bool
     {
-        return $this->etat_id;
+        return $this->status;
     }
 
-    public function setEtatId(int $etat_id): self
+    public function setStatus(bool $status): self
     {
-        $this->etat_id = $etat_id;
+        $this->status = $status;
 
         return $this;
     }
 
-    public function getFichier(): ?string
+    /**
+     * @return Collection|Etat[]
+     */
+    public function getEtats(): Collection
     {
-        return $this->fichier;
+        return $this->etats;
     }
 
-    public function setFichier(string $fichier): self
+    public function addEtat(Etat $etat): self
     {
-        $this->fichier = $fichier;
+        if (!$this->etats->contains($etat)) {
+            $this->etats[] = $etat;
+            $etat->setReclamation($this);
+        }
 
         return $this;
     }
 
-    public function getMode(): ?int
+    public function removeEtat(Etat $etat): self
     {
-        return $this->mode;
-    }
-
-    public function setMode(int $mode): self
-    {
-        $this->mode = $mode;
+        if ($this->etats->removeElement($etat)) {
+            // set the owning side to null (unless already changed)
+            if ($etat->getReclamation() === $this) {
+                $etat->setReclamation(null);
+            }
+        }
 
         return $this;
     }
 
+    /**
+     * @return Collection|Canal[]
+     */
+    public function getCanals(): Collection
+    {
+        return $this->canals;
+    }
+
+    public function addCanal(Canal $canal): self
+    {
+        if (!$this->canals->contains($canal)) {
+            $this->canals[] = $canal;
+            $canal->setReclamation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCanal(Canal $canal): self
+    {
+        if ($this->canals->removeElement($canal)) {
+            // set the owning side to null (unless already changed)
+            if ($canal->getReclamation() === $this) {
+                $canal->setReclamation(null);
+            }
+        }
+
+        return $this;
+    }
 
     public function getClient(): ?Client
     {
@@ -142,40 +168,8 @@ class Reclamation
 
         return $this;
     }
-
-    public function getEtat(): ?Etat
+    public function __toString()
     {
-        return $this->etat;
-    }
-
-    public function setEtat(?Etat $etat): self
-    {
-        $this->etat = $etat;
-
-        return $this;
-    }
-
-    public function getCanal(): ?Canal
-    {
-        return $this->canal;
-    }
-
-    public function setCanal(?Canal $canal): self
-    {
-        $this->canal = $canal;
-
-        return $this;
-    }
-
-    public function getUpdateReclamation(): ?\DateTimeInterface
-    {
-        return $this->update_reclamation;
-    }
-
-    public function setUpdateReclamation(\DateTimeInterface $update_reclamation): self
-    {
-        $this->update_reclamation = $update_reclamation;
-
-        return $this;
+        return $this->ref_rec;
     }
 }

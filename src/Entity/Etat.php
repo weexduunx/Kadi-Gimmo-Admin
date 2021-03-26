@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\EtatRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,61 +20,39 @@ class Etat
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $nom;
+    private $label;
 
     /**
-     * @ORM\OneToMany(targetEntity=Reclamation::class, mappedBy="etat")
+     * @ORM\ManyToOne(targetEntity=Reclamation::class, inversedBy="etats")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $reclamations;
-
-    public function __construct()
-    {
-        $this->reclamations = new ArrayCollection();
-    }
+    private $reclamation;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getLabel(): ?string
     {
-        return $this->nom;
+        return $this->label;
     }
 
-    public function setNom(string $nom): self
+    public function setLabel(string $label): self
     {
-        $this->nom = $nom;
+        $this->label = $label;
 
         return $this;
     }
 
-    /**
-     * @return Collection|Reclamation[]
-     */
-    public function getReclamations(): Collection
+    public function getReclamation(): ?Reclamation
     {
-        return $this->reclamations;
+        return $this->reclamation;
     }
 
-    public function addReclamation(Reclamation $reclamation): self
+    public function setReclamation(?Reclamation $reclamation): self
     {
-        if (!$this->reclamations->contains($reclamation)) {
-            $this->reclamations[] = $reclamation;
-            $reclamation->setEtat($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReclamation(Reclamation $reclamation): self
-    {
-        if ($this->reclamations->removeElement($reclamation)) {
-            // set the owning side to null (unless already changed)
-            if ($reclamation->getEtat() === $this) {
-                $reclamation->setEtat(null);
-            }
-        }
+        $this->reclamation = $reclamation;
 
         return $this;
     }

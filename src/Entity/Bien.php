@@ -2,13 +2,18 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BienRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ApiResource(formats={"json"})
  * @ORM\Entity(repositoryClass=BienRepository::class)
+ * @ApiFilter(SearchFilter::class, properties={"id":"exact"})
  */
 class Bien
 {
@@ -22,70 +27,69 @@ class Bien
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $code_bien;
+    private $ref_bien;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=0)
+     * @ORM\Column(type="string", length=255)
      */
-    private $prix;
+    private $nature_du_bien;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=3)
      */
-    private $projet_id;
+    private $prix_du_bien;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="decimal", precision=10, scale=3)
      */
     private $superficie;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $titre;
+    private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Projet::class, inversedBy="biens")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $projet;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Achat::class, mappedBy="bien")
-     */
-    private $achats;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Candidature::class, mappedBy="bien")
-     */
-    private $candidatures;
-
-    /**
-     * @ORM\OneToMany(targetEntity=TypeBien::class, mappedBy="bien")
-     */
-    private $typeBiens;
-
-    /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $created_at;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $updated_at;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $deleted_at;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Achat::class, inversedBy="biens")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $achat;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Candidature::class, inversedBy="biens")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $candidature;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=TypeDeBien::class, inversedBy="bien")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $typeDeBien;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Projet::class, mappedBy="bien")
+     */
+    private $projets;
 
     public function __construct()
     {
-        $this->achats = new ArrayCollection();
-        $this->candidatures = new ArrayCollection();
-        $this->typeBiens = new ArrayCollection();
+        $this->projets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,165 +97,62 @@ class Bien
         return $this->id;
     }
 
-    public function getCodeBien(): ?string
+    public function getRefBien(): ?string
     {
-        return $this->code_bien;
+        return $this->ref_bien;
     }
 
-    public function setCodeBien(string $code_bien): self
+    public function setRefBien(string $ref_bien): self
     {
-        $this->code_bien = $code_bien;
+        $this->ref_bien = $ref_bien;
 
         return $this;
     }
 
-
-    public function getPrix(): ?string
+    public function getNatureDuBien(): ?string
     {
-        return $this->prix;
+        return $this->nature_du_bien;
     }
 
-    public function setPrix(string $prix): self
+    public function setNatureDuBien(string $nature_du_bien): self
     {
-        $this->prix = $prix;
+        $this->nature_du_bien = $nature_du_bien;
 
         return $this;
     }
 
-    public function getProjetId(): ?int
+    public function getPrixDuBien(): ?string
     {
-        return $this->projet_id;
+        return $this->prix_du_bien;
     }
 
-    public function setProjetId(int $projet_id): self
+    public function setPrixDuBien(string $prix_du_bien): self
     {
-        $this->projet_id = $projet_id;
+        $this->prix_du_bien = $prix_du_bien;
 
         return $this;
     }
 
-    public function getSuperficie(): ?int
+    public function getSuperficie(): ?string
     {
         return $this->superficie;
     }
 
-    public function setSuperficie(int $superficie): self
+    public function setSuperficie(string $superficie): self
     {
         $this->superficie = $superficie;
 
         return $this;
     }
 
-    public function getTitre(): ?bool
+    public function getStatus(): ?bool
     {
-        return $this->titre;
+        return $this->status;
     }
 
-    public function setTitre(bool $titre): self
+    public function setStatus(bool $status): self
     {
-        $this->titre = $titre;
-
-        return $this;
-    }
-
-    public function getProjet(): ?Projet
-    {
-        return $this->projet;
-    }
-
-    public function setProjet(?Projet $projet): self
-    {
-        $this->projet = $projet;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Achat[]
-     */
-    public function getAchats(): Collection
-    {
-        return $this->achats;
-    }
-
-    public function addAchat(Achat $achat): self
-    {
-        if (!$this->achats->contains($achat)) {
-            $this->achats[] = $achat;
-            $achat->setBien($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAchat(Achat $achat): self
-    {
-        if ($this->achats->removeElement($achat)) {
-            // set the owning side to null (unless already changed)
-            if ($achat->getBien() === $this) {
-                $achat->setBien(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Candidature[]
-     */
-    public function getCandidatures(): Collection
-    {
-        return $this->candidatures;
-    }
-
-    public function addCandidature(Candidature $candidature): self
-    {
-        if (!$this->candidatures->contains($candidature)) {
-            $this->candidatures[] = $candidature;
-            $candidature->setBien($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCandidature(Candidature $candidature): self
-    {
-        if ($this->candidatures->removeElement($candidature)) {
-            // set the owning side to null (unless already changed)
-            if ($candidature->getBien() === $this) {
-                $candidature->setBien(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|TypeBien[]
-     */
-    public function getTypeBiens(): Collection
-    {
-        return $this->typeBiens;
-    }
-
-    public function addTypeBien(TypeBien $typeBien): self
-    {
-        if (!$this->typeBiens->contains($typeBien)) {
-            $this->typeBiens[] = $typeBien;
-            $typeBien->setBien($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTypeBien(TypeBien $typeBien): self
-    {
-        if ($this->typeBiens->removeElement($typeBien)) {
-            // set the owning side to null (unless already changed)
-            if ($typeBien->getBien() === $this) {
-                $typeBien->setBien(null);
-            }
-        }
+        $this->status = $status;
 
         return $this;
     }
@@ -292,4 +193,73 @@ class Bien
         return $this;
     }
 
+    public function getAchat(): ?Achat
+    {
+        return $this->achat;
+    }
+
+    public function setAchat(?Achat $achat): self
+    {
+        $this->achat = $achat;
+
+        return $this;
+    }
+
+    public function getCandidature(): ?Candidature
+    {
+        return $this->candidature;
+    }
+
+    public function setCandidature(?Candidature $candidature): self
+    {
+        $this->candidature = $candidature;
+
+        return $this;
+    }
+
+    public function getTypeDeBien(): ?TypeDeBien
+    {
+        return $this->typeDeBien;
+    }
+
+    public function setTypeDeBien(?TypeDeBien $typeDeBien): self
+    {
+        $this->typeDeBien = $typeDeBien;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Projet[]
+     */
+    public function getProjets(): Collection
+    {
+        return $this->projets;
+    }
+
+    public function addProjet(Projet $projet): self
+    {
+        if (!$this->projets->contains($projet)) {
+            $this->projets[] = $projet;
+            $projet->setBien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjet(Projet $projet): self
+    {
+        if ($this->projets->removeElement($projet)) {
+            // set the owning side to null (unless already changed)
+            if ($projet->getBien() === $this) {
+                $projet->setBien(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return $this->nature_du_bien;
+    }
 }

@@ -22,33 +22,22 @@ class Ville
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $nom;
+    private $label;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $region_id;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Site::class, mappedBy="ville")
-     */
-    private $site;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Client::class, mappedBy="ville")
-     */
-    private $client;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="ville")
+     * @ORM\ManyToOne(targetEntity=Region::class, inversedBy="villes")
      * @ORM\JoinColumn(nullable=false)
      */
     private $region;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Client::class, mappedBy="ville")
+     */
+    private $clients;
+
     public function __construct()
     {
-        $this->site = new ArrayCollection();
-        $this->client = new ArrayCollection();
+        $this->clients = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,86 +45,14 @@ class Ville
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getLabel(): ?string
     {
-        return $this->nom;
+        return $this->label;
     }
 
-    public function setNom(string $nom): self
+    public function setLabel(string $label): self
     {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getRegionId(): ?int
-    {
-        return $this->region_id;
-    }
-
-    public function setRegionId(int $region_id): self
-    {
-        $this->region_id = $region_id;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Site[]
-     */
-    public function getSite(): Collection
-    {
-        return $this->site;
-    }
-
-    public function addSite(Site $site): self
-    {
-        if (!$this->site->contains($site)) {
-            $this->site[] = $site;
-            $site->setVille($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSite(Site $site): self
-    {
-        if ($this->site->removeElement($site)) {
-            // set the owning side to null (unless already changed)
-            if ($site->getVille() === $this) {
-                $site->setVille(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Client[]
-     */
-    public function getClient(): Collection
-    {
-        return $this->client;
-    }
-
-    public function addClient(Client $client): self
-    {
-        if (!$this->client->contains($client)) {
-            $this->client[] = $client;
-            $client->setVille($this);
-        }
-
-        return $this;
-    }
-
-    public function removeClient(Client $client): self
-    {
-        if ($this->client->removeElement($client)) {
-            // set the owning side to null (unless already changed)
-            if ($client->getVille() === $this) {
-                $client->setVille(null);
-            }
-        }
+        $this->label = $label;
 
         return $this;
     }
@@ -150,5 +67,37 @@ class Ville
         $this->region = $region;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Client[]
+     */
+    public function getClients(): Collection
+    {
+        return $this->clients;
+    }
+
+    public function addClient(Client $client): self
+    {
+        if (!$this->clients->contains($client)) {
+            $this->clients[] = $client;
+            $client->addVille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClient(Client $client): self
+    {
+        if ($this->clients->removeElement($client)) {
+            $client->removeVille($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->label;
     }
 }

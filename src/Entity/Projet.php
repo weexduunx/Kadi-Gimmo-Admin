@@ -22,47 +22,42 @@ class Projet
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $code_projet;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $crée_le;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $supprimé_le;
+    private $ref_projet;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $nom;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $site_id;
+    private $label;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $MàJ_le;
+    private $created_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="projets")
+     * @ORM\Column(type="datetime")
+     */
+    private $updated_at;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $deleted_at;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Bien::class, inversedBy="projets")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $site;
+    private $bien;
 
     /**
-     * @ORM\OneToMany(targetEntity=Bien::class, mappedBy="projet")
+     * @ORM\OneToMany(targetEntity=Site::class, mappedBy="projet")
      */
-    private $biens;
+    private $sites;
 
     public function __construct()
     {
-        $this->biens = new ArrayCollection();
+        $this->sites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,117 +65,110 @@ class Projet
         return $this->id;
     }
 
-    public function getCodeProjet(): ?string
+    public function getRefProjet(): ?string
     {
-        return $this->code_projet;
+        return $this->ref_projet;
     }
 
-    public function setCodeProjet(string $code_projet): self
+    public function setRefProjet(string $ref_projet): self
     {
-        $this->code_projet = $code_projet;
+        $this->ref_projet = $ref_projet;
 
         return $this;
     }
 
-    public function getCréeLe(): ?\DateTimeInterface
+    public function getLabel(): ?string
     {
-        return $this->crée_le;
+        return $this->label;
     }
 
-    public function setCréeLe(\DateTimeInterface $crée_le): self
+    public function setLabel(string $label): self
     {
-        $this->crée_le = $crée_le;
+        $this->label = $label;
 
         return $this;
     }
 
-    public function getSuppriméLe(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->supprimé_le;
+        return $this->created_at;
     }
 
-    public function setSuppriméLe(\DateTimeInterface $supprimé_le): self
+    public function setCreatedAt(\DateTimeInterface $created_at): self
     {
-        $this->supprimé_le = $supprimé_le;
+        $this->created_at = $created_at;
 
         return $this;
     }
 
-    public function getNom(): ?string
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->nom;
+        return $this->updated_at;
     }
 
-    public function setNom(string $nom): self
+    public function setUpdatedAt(\DateTimeInterface $updated_at): self
     {
-        $this->nom = $nom;
+        $this->updated_at = $updated_at;
 
         return $this;
     }
 
-    public function getSiteId(): ?int
+    public function getDeletedAt(): ?\DateTimeInterface
     {
-        return $this->site_id;
+        return $this->deleted_at;
     }
 
-    public function setSiteId(int $site_id): self
+    public function setDeletedAt(\DateTimeInterface $deleted_at): self
     {
-        $this->site_id = $site_id;
+        $this->deleted_at = $deleted_at;
 
         return $this;
     }
 
-    public function getMàJLe(): ?\DateTimeInterface
+    public function getBien(): ?Bien
     {
-        return $this->MàJ_le;
+        return $this->bien;
     }
 
-    public function setMàJLe(\DateTimeInterface $MàJ_le): self
+    public function setBien(?Bien $bien): self
     {
-        $this->MàJ_le = $MàJ_le;
+        $this->bien = $bien;
 
         return $this;
     }
-
-    public function getSite(): ?Site
+    public function __toString()
     {
-        return $this->site;
-    }
-
-    public function setSite(?Site $site): self
-    {
-        $this->site = $site;
-
-        return $this;
+        return $this->label;
     }
 
     /**
-     * @return Collection|Bien[]
+     * @return Collection|Site[]
      */
-    public function getBiens(): Collection
+    public function getSites(): Collection
     {
-        return $this->biens;
+        return $this->sites;
     }
 
-    public function addBien(Bien $bien): self
+    public function addSite(Site $site): self
     {
-        if (!$this->biens->contains($bien)) {
-            $this->biens[] = $bien;
-            $bien->setProjet($this);
+        if (!$this->sites->contains($site)) {
+            $this->sites[] = $site;
+            $site->setProjet($this);
         }
 
         return $this;
     }
 
-    public function removeBien(Bien $bien): self
+    public function removeSite(Site $site): self
     {
-        if ($this->biens->removeElement($bien)) {
+        if ($this->sites->removeElement($site)) {
             // set the owning side to null (unless already changed)
-            if ($bien->getProjet() === $this) {
-                $bien->setProjet(null);
+            if ($site->getProjet() === $this) {
+                $site->setProjet(null);
             }
         }
 
         return $this;
     }
+
 }

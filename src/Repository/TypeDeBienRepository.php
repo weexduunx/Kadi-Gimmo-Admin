@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\TypeBien;
+use App\Entity\TypeDeBien;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method TypeBien|null find($id, $lockMode = null, $lockVersion = null)
- * @method TypeBien|null findOneBy(array $criteria, array $orderBy = null)
- * @method TypeBien[]    findAll()
- * @method TypeBien[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method TypeDeBien|null find($id, $lockMode = null, $lockVersion = null)
+ * @method TypeDeBien|null findOneBy(array $criteria, array $orderBy = null)
+ * @method TypeDeBien[]    findAll()
+ * @method TypeDeBien[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TypeBienRepository extends ServiceEntityRepository
+class TypeDeBienRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TypeBien::class);
+        parent::__construct($registry, TypeDeBien::class);
     }
 
     // /**
-    //  * @return TypeBien[] Returns an array of TypeBien objects
+    //  * @return TypeDeBien[] Returns an array of TypeDeBien objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class TypeBienRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?TypeBien
+    public function findOneBySomeField($value): ?TypeDeBien
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')

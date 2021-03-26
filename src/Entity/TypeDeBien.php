@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\RegionRepository;
+use App\Repository\TypeDeBienRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=RegionRepository::class)
+ * @ORM\Entity(repositoryClass=TypeDeBienRepository::class)
  */
-class Region
+class TypeDeBien
 {
     /**
      * @ORM\Id
@@ -25,13 +25,13 @@ class Region
     private $label;
 
     /**
-     * @ORM\OneToMany(targetEntity=Ville::class, mappedBy="region")
+     * @ORM\OneToMany(targetEntity=Bien::class, mappedBy="typeDeBien")
      */
-    private $villes;
+    private $bien;
 
     public function __construct()
     {
-        $this->villes = new ArrayCollection();
+        $this->bien = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -52,29 +52,29 @@ class Region
     }
 
     /**
-     * @return Collection|Ville[]
+     * @return Collection|Bien[]
      */
-    public function getVilles(): Collection
+    public function getBien(): Collection
     {
-        return $this->villes;
+        return $this->bien;
     }
 
-    public function addVille(Ville $ville): self
+    public function addBien(Bien $bien): self
     {
-        if (!$this->villes->contains($ville)) {
-            $this->villes[] = $ville;
-            $ville->setRegion($this);
+        if (!$this->bien->contains($bien)) {
+            $this->bien[] = $bien;
+            $bien->setTypeDeBien($this);
         }
 
         return $this;
     }
 
-    public function removeVille(Ville $ville): self
+    public function removeBien(Bien $bien): self
     {
-        if ($this->villes->removeElement($ville)) {
+        if ($this->bien->removeElement($bien)) {
             // set the owning side to null (unless already changed)
-            if ($ville->getRegion() === $this) {
-                $ville->setRegion(null);
+            if ($bien->getTypeDeBien() === $this) {
+                $bien->setTypeDeBien(null);
             }
         }
 

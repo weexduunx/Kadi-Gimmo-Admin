@@ -4,6 +4,10 @@ namespace App\Controller\Admin;
 
 use App\Entity\Candidature;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class CandidatureCrudController extends AbstractCrudController
 {
@@ -12,14 +16,18 @@ class CandidatureCrudController extends AbstractCrudController
         return Candidature::class;
     }
 
-    /*
+
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            AssociationField::new('clients'),
+            AssociationField::new('biens'),
+            TextField::new('nom_du_bien'),
+            TextField::new('type_de_candidature'),
+            MoneyField::new('cout_global')->setCurrency('XOF'),
+            MoneyField::new('monthly')->setCurrency('XOF'),
+            BooleanField::new('status'),
         ];
     }
-    */
+
 }
