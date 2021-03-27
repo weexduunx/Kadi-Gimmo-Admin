@@ -20,7 +20,7 @@ class AchatCrudController extends AbstractCrudController
     {
         return [
             TextField::new('titre'),
-            AssociationField::new('biens'),
+            AssociationField::new('product'),
             AssociationField::new('clients'),
             BooleanField::new('status'),
         ];

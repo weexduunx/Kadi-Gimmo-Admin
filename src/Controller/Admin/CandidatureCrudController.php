@@ -21,7 +21,7 @@ class CandidatureCrudController extends AbstractCrudController
     {
         return [
             AssociationField::new('clients'),
-            AssociationField::new('biens'),
+            AssociationField::new('product'),
             TextField::new('nom_du_bien'),
             TextField::new('type_de_candidature'),
             MoneyField::new('cout_global')->setCurrency('XOF'),

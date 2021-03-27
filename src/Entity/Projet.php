@@ -136,10 +136,6 @@ class Projet
 
         return $this;
     }
-    public function __toString()
-    {
-        return $this->label;
-    }
 
     /**
      * @return Collection|Site[]
@@ -170,5 +166,10 @@ class Projet
 
         return $this;
     }
+    public function __toString()
+    {
+        return $this->label;
+    }
+
 
 }

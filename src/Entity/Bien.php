@@ -4,16 +4,20 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Gedmo\Mapping\Annotation as Gedmo;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BienRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ApiResource(formats={"json"})
  * @ORM\Entity(repositoryClass=BienRepository::class)
  * @ApiFilter(SearchFilter::class, properties={"id":"exact"})
+ * @Vich\Uploadable
  */
 class Bien
 {
@@ -45,33 +49,42 @@ class Bien
     private $superficie;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     * @var string
+     */
+    private $image;
+
+    /**
+     * @Vich\UploadableField(mapping="product_images", fileNameProperty="image")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $status;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
      */
     private $created_at;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="update")
      */
     private $updated_at;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $deleted_at;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Achat::class, inversedBy="biens")
+     * @ORM\ManyToOne(targetEntity=Achat::class, inversedBy="product")
      * @ORM\JoinColumn(nullable=false)
      */
     private $achat;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Candidature::class, inversedBy="biens")
+     * @ORM\ManyToOne(targetEntity=Candidature::class, inversedBy="product")
      * @ORM\JoinColumn(nullable=false)
      */
     private $candidature;
@@ -144,6 +157,33 @@ class Bien
 
         return $this;
     }
+    public function setImageFile($image = null)
+    {
+        $this->imageFile = $image;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($image) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
 
     public function getStatus(): ?bool
     {
@@ -162,35 +202,9 @@ class Bien
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updated_at;
-    }
-
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
-    {
-        $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    public function getDeletedAt(): ?\DateTimeInterface
-    {
-        return $this->deleted_at;
-    }
-
-    public function setDeletedAt(\DateTimeInterface $deleted_at): self
-    {
-        $this->deleted_at = $deleted_at;
-
-        return $this;
     }
 
     public function getAchat(): ?Achat
