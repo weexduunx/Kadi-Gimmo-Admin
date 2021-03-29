@@ -36,15 +36,28 @@ class ClientRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Client
+
+    public function findOneBySomeField(): ?Client
     {
+        $value='nom';
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.nom = :nom')
+            ->setParameter('nom', '%'.$value.'%')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
+
+
+    /**
+     * @return int|mixed|string
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countAllClient()
+    {
+        $queryBuilder = $this->createQueryBuilder('c');
+        $queryBuilder->select('COUNT(c.id) as value');
+
+        return  $queryBuilder->getQuery()->getOneOrNullResult();
+    }
 }

@@ -19,32 +19,41 @@ class AchatRepository extends ServiceEntityRepository
         parent::__construct($registry, Achat::class);
     }
 
-    // /**
-    //  * @return Achat[] Returns an array of Achat objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+     * @return Achat[] Returns an array of Achat objects
+     */
+    public function findByExampleField(): array
     {
+        $value = "id";
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('a.id = :id')
+            ->setParameter('id', '%'.$value.'%')
             ->orderBy('a.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Achat
+    public function findOneBySomeField(): ?Achat
     {
+        $value = "titre";
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('a.titre = :titre')
+            ->setParameter('titre','%'.$value.'%')
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()
         ;
     }
-    */
+
+    /**
+     * @return int|mixed|string
+     */
+    public function countAllAchat()
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+        $queryBuilder->select('COUNT(a.id) as value');
+
+        return  $queryBuilder->getQuery()->getResult();
+    }
 }
