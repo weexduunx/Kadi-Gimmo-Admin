@@ -63,7 +63,7 @@ class DashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle('Kaay Dëkk Immo Admin')
         // you can include HTML contents too (e.g. to link to an image)
-        ->setTitle('<img src="public/uploads/images/products/logoKDI.png"> Kaay Dëkk <span class="text-small">Immo.</span>')
+        ->setTitle('<img src="uploads/images/products/logoKDI.png" width="150px"><span class="text-small"></span>')
 
         // the path defined in this method is passed to the Twig asset() function
         ->setFaviconPath('favicon.svg')
